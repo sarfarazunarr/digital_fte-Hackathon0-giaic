@@ -1,0 +1,1 @@
+- [2026-02-14 17:01:49] Failed to process task_welcome_email.md. Moved to Inbox as ERROR_20260214170149_task_welcome_email.md. Error: Unknown file type or format: task_welcome_email.md

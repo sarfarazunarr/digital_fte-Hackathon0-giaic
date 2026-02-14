@@ -1,0 +1,1 @@
+Send a welcome email to our new team member, John Doe, at john.doe@example.com. The subject should be "Welcome to the Team, John!" and the body should include a friendly greeting, mention access to the company handbook in the Memory folder, and ask him to connect with the team on LinkedIn.

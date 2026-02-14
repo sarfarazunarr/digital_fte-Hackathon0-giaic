@@ -1,0 +1,1 @@
+Navigate to linkedin.com, check for login selectors, find the "Start a post" button, type the content, and click Post.

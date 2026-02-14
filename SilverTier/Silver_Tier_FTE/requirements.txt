@@ -1,0 +1,5 @@
+secure-smtplib
+pywhatkit
+python-dotenv
+watchdog
+openai-agents

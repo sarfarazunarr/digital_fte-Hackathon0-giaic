@@ -12,3 +12,4 @@ For detailed project specifications and guidelines, please refer to the official
 The following tiers are currently available within the AI Employee Vault:
 
 *   **Bronze Tier** - [AI_Employee_Vault](AI_Employee_Vault)
+*   **Silver Tier** - [SilverTier](SilverTier)

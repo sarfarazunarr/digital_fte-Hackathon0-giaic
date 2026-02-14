@@ -1,0 +1,8 @@
+{
+  "servers": [
+    {
+      "name": "puppeteer",
+      "package": "@modelcontextprotocol/server-puppeteer"
+    }
+  ]
+}

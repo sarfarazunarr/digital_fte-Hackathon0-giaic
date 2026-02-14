@@ -1,0 +1,1 @@
+Send a promotional WhatsApp message to our customer base about our new product launch. The message should be concise, highlight the key features of the new product, and include a link to our website: https://www.example.com/new-product.
