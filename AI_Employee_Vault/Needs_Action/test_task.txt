@@ -1,0 +1,4 @@
+This is a test file for the AI Employee system.
+The contents of this file should be summarized into Dashboard.md.
+It should be moved from Drop_Zone to Needs_Action, and finally to Done.
+The watcher should create a metadata file, and the agent should create a plan and a PHR record.
