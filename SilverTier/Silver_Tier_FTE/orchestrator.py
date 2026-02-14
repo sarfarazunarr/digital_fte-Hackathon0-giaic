@@ -16,7 +16,7 @@ sys.path.insert(0, TOOLS_DIR)
 try:
     from gmail_sender import send_email
     from whatsapp_sender import send_whatsapp
-    # linkedin_poster is still called via subprocess as it might need its own environment/dependencies
+    from linkedin_poster import post_to_linkedin
 except ImportError as e:
     print(f"Error importing sender modules: {e}. Make sure they are in the 'tools' directory and dependencies are installed.", file=sys.stderr)
     sys.exit(1)
@@ -115,15 +115,7 @@ def process_file(filepath):
             if not content:
                 raise ValueError(f"Missing content for LinkedIn post in {filename}")
 
-            # Call linkedin_poster.py via subprocess as it's designed to be run externally
-            result = subprocess.run(
-                ['python', os.path.join(TOOLS_DIR, 'linkedin_poster.py'), content],
-                capture_output=True,
-                text=True,
-                check=True
-            )
-            print(result.stdout)
-            print(result.stderr)
+            post_to_linkedin(content)
             log_entry = f"Posted to LinkedIn from {filename}"
 
         else:
