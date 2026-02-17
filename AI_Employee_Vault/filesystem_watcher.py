@@ -1,6 +1,7 @@
 import os
 import time
 import shutil
+import logging
 from datetime import datetime
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -9,12 +10,27 @@ from watchdog.events import FileSystemEventHandler
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DROP_ZONE = os.path.join(BASE_DIR, "Drop_Zone")
 NEEDS_ACTION = os.path.join(BASE_DIR, "Needs_Action")
+LOG_DIR = os.path.join(BASE_DIR, "Logs")
+
+# Logging Configuration
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler(os.path.join(LOG_DIR, "system.log")),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger("Watcher")
 
 class WatcherHandler(FileSystemEventHandler):
     def on_created(self, event):
         if not event.is_directory:
             filename = os.path.basename(event.src_path)
-            print(f"Detected new file: {filename}")
+            logger.info(f"Detected new file: {filename}")
             
             # Wait a moment to ensure file is fully written
             time.sleep(1)
@@ -25,7 +41,7 @@ class WatcherHandler(FileSystemEventHandler):
             try:
                 # Move the file
                 shutil.move(src_path, dest_path)
-                print(f"Moved {filename} to {NEEDS_ACTION}")
+                logger.info(f"Moved {filename} to {NEEDS_ACTION}")
                 
                 # Create metadata MD file
                 metadata_filename = f"FILE_{filename}.md"
@@ -37,22 +53,22 @@ class WatcherHandler(FileSystemEventHandler):
                     f.write(f"- **Timestamp:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
                     f.write(f"- **Status:** pending\n")
                 
-                print(f"Created metadata file: {metadata_filename}")
+                logger.info(f"Created metadata file: {metadata_filename}")
                 
             except Exception as e:
-                print(f"Error processing {filename}: {e}")
+                logger.error(f"Error processing {filename}: {e}")
 
 def scan_existing_files():
-    print(f"Scanning for existing files in {DROP_ZONE}...")
+    logger.info(f"Scanning for existing files in {DROP_ZONE}...")
     for filename in os.listdir(DROP_ZONE):
         src_path = os.path.join(DROP_ZONE, filename)
         if os.path.isfile(src_path):
-            print(f"Found existing file: {filename}")
+            logger.info(f"Found existing file: {filename}")
             # Manually trigger the move logic
             dest_path = os.path.join(NEEDS_ACTION, filename)
             try:
                 shutil.move(src_path, dest_path)
-                print(f"Moved {filename} to {NEEDS_ACTION}")
+                logger.info(f"Moved {filename} to {NEEDS_ACTION}")
                 
                 metadata_filename = f"FILE_{filename}.md"
                 metadata_path = os.path.join(NEEDS_ACTION, metadata_filename)
@@ -62,7 +78,7 @@ def scan_existing_files():
                     f.write(f"- **Timestamp:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
                     f.write(f"- **Status:** pending\n")
             except Exception as e:
-                print(f"Error moving existing file {filename}: {e}")
+                logger.error(f"Error moving existing file {filename}: {e}")
 
 if __name__ == "__main__":
     if not os.path.exists(DROP_ZONE):
@@ -77,12 +93,13 @@ if __name__ == "__main__":
     observer = Observer()
     observer.schedule(event_handler, DROP_ZONE, recursive=False)
     
-    print(f"Watching folder: {DROP_ZONE}")
+    logger.info(f"Watching folder: {DROP_ZONE}")
     observer.start()
     
     try:
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
+        logger.info("Watcher stopping...")
         observer.stop()
     observer.join()

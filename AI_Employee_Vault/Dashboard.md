@@ -1,3 +1,8 @@
+---
+tags: [dashboard, ai-employee, digital-fte]
+status: active
+last_updated: 2026-02-17
+---
 # AI Employee Dashboard
 
 ## Recent Activity

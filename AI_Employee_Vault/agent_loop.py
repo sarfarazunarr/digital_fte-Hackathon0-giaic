@@ -1,6 +1,7 @@
 import os
 import time
 import shutil
+import logging
 from datetime import datetime
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -9,19 +10,34 @@ from openai import OpenAI
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 
-# Check for API Key
-api_key = os.getenv("OPENAI_API_KEY")
-if not api_key:
-    print("Warning: OPENAI_API_KEY not found in .env file. Falling back to simple summarization.")
-    client = None
-else:
-    client = OpenAI(api_key=api_key)
-
 NEEDS_ACTION = os.path.join(BASE_DIR, "Needs_Action")
 DONE = os.path.join(BASE_DIR, "Done")
 PLANS = os.path.join(BASE_DIR, "Plans")
-DASHBOARD = os.path.join(BASE_DIR, "Dashboard.md")
+DASHBOARD = os.path.join(BASE_DIR, "Documentation", "Dashboard.md")
 PHR = os.path.join(BASE_DIR, "PHR")
+LOG_DIR = os.path.join(BASE_DIR, "Logs")
+
+# Logging Configuration
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler(os.path.join(LOG_DIR, "system.log")),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger("Agent")
+
+# Check for API Key
+api_key = os.getenv("OPENAI_API_KEY")
+if not api_key:
+    logger.warning("OPENAI_API_KEY not found in .env file. Falling back to simple summarization.")
+    client = None
+else:
+    client = OpenAI(api_key=api_key)
 
 def get_ai_summary(content):
     if not client:
@@ -37,7 +53,7 @@ def get_ai_summary(content):
         )
         return response.choices[0].message.content
     except Exception as e:
-        print(f"AI Summarization failed: {e}")
+        logger.error(f"AI Summarization failed: {e}")
         return content[:200] + ("..." if len(content) > 200 else "")
 
 def process_tasks():
@@ -50,7 +66,7 @@ def process_tasks():
         return False
 
     for filename in files:
-        print(f"Processing: {filename}")
+        logger.info(f"Processing: {filename}")
         src_path = os.path.join(NEEDS_ACTION, filename)
         
         # 1. Read content
@@ -94,7 +110,7 @@ def process_tasks():
         if os.path.exists(meta_src):
             shutil.move(meta_src, os.path.join(DONE, meta_file))
 
-        print(f"Successfully processed {filename}")
+        logger.info(f"Successfully processed {filename}")
 
     return True
 
@@ -103,8 +119,8 @@ if __name__ == "__main__":
         if not os.path.exists(folder):
             os.makedirs(folder)
 
-    print("Agent Loop (Ralph Wiggum Mode) started. Monitoring Needs_Action...")
-    print(f"Directory: {NEEDS_ACTION}")
+    logger.info("Agent Loop (Ralph Wiggum Mode) started. Monitoring Needs_Action...")
+    logger.info(f"Directory: {NEEDS_ACTION}")
     
     try:
         while True:
@@ -112,8 +128,7 @@ if __name__ == "__main__":
             if not processed:
                 # Polling interval with minor heartbeat
                 time.sleep(5)
-                # print(".", end="", flush=True) # Optional heartbeat
             else:
-                print("Tasks processed, checking for more...")
+                logger.info("Tasks processed, checking for more...")
     except KeyboardInterrupt:
-        print("\nAgent Loop stopped.")
+        logger.info("Agent Loop stopped.")

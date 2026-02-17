@@ -1,3 +1,7 @@
+---
+tags: [constitution, policy, digital-fte]
+type: handbook
+---
 # Company Handbook
 
 ## Basic Rules
