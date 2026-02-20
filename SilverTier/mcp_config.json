@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "email-service": {
+      "command": "python",
+      "args": ["f:/ai_dd/digital_fte/SilverTier/mcp_server/email_server.py"],
+      "env": {
+        "PYTHONPATH": "f:/ai_dd/digital_fte/SilverTier"
+      }
+    }
+  }
+}

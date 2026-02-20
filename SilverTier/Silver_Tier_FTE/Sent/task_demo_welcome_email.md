@@ -1,1 +1,0 @@
-Send a welcome email to our new team member, Sarfaraz Unar, at sarfarazunar751@gmail.com. The subject should be "Welcome to the Team, Sarfaraz!" and the body should include a friendly greeting, mention access to the company handbook in the Memory folder, and ask him to connect with the team on LinkedIn.

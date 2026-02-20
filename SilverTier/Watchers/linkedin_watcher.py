@@ -1,0 +1,1 @@
+# LinkedIn Watcher Stub\nimport time\nprint(" LinkedIn Watcher Active\)\nwhile True:\n time.sleep(600)
