@@ -1,48 +1,73 @@
-# How to Run the AI Employee (Bronze Tier)
+# Silver Tier AI Employee - Digital FTE
 
-## Prerequisites
-- [uv](https://github.com/astral-sh/uv) installed on your system.
+Welcome to the **Silver Tier** of your Digital FTE. This version introduces high-level reasoning, multi-channel communication (Gmail, LinkedIn, WhatsApp), and a strict Human-in-the-loop (HITL) safety workflow.
 
-## Setup
-1. Open a terminal in the `f:\ai_dd\digital_fte\AI_Employee_Vault` directory.
-2. The virtual environment and dependencies are already managed by `uv`.
-## New Features (Phase 4)
+## 🚀 Key Improvements (Silver Tier)
 
-### 1. System Logging
-All activity from the watcher and agent is now logged to `AI_Employee_Vault/Logs/system.log`. This includes:
-- File detection and movement.
-- AI processing status.
-- Errors and heartbeats.
+### 1. Claude-Style Reasoning Loop
+The agent no longer just summarizes files. It now **analyzes, strategizes, and proposes** actions using a dedicated reasoning loop. Every task results in a `PLAN_*.md` file detailing the agent's thought process.
 
-### 2. Obsidian Ready
-The `Documentation/Dashboard.md` and `Documentation/Company_Handbook.md` files now include YAML frontmatter. You can open the `AI_Employee_Vault` folder as an Obsidian Vault to see:
-- Tagged documents.
-- Automatic task tracking.
-- Metadata for your AI Employee.
+### 2. Multi-Channel Watchers
+- **Gmail**: Automatically monitors your inbox for new tasks.
+- **LinkedIn**: Checks for notifications and business opportunities.
+- **WhatsApp**: Monitors incoming messages for urgent requests.
 
-### 3. Formalized Skills
-Check the `Skills/` directory for detailed documentation on what your agent can do. The `Document_Summarizer.md` file defines the current intelligence level of your Digital FTE.
+### 3. Human-in-the-loop (HITL) Workflow
+Safety first. The agent **drafts** communications but **never sends** them without your permission.
+- **Drafts Folder**: Where the agent places proposed emails or posts.
+- **Outbox Folder**: Where you move approved drafts to trigger execution.
 
-## Running the Components
+### 4. Advanced Automation Tools
+- **LinkedIn Poster**: Automatically posts business updates to generate sales.
+- **Email MCP Server**: Provides a standardized interface for external agents to send emails.
+- **Task Scheduler**: Built-in support for Windows Task Scheduler to keep everything running 24/7.
 
-You need to run two processes simultaneously. You can do this in separate terminal windows.
+---
 
-### 1. File Watcher
-This script monitors the `Drop_Zone` folder and moves any new files to `Needs_Action` while creating a metadata file.
+## 📂 Directory Structure
+
+- `Inbox/`: Raw tasks and incoming emails/messages.
+- `Plans/`: The agent's reasoning and strategy documents.
+- `Drafts/`: Proposed communications (Email, LinkedIn, WhatsApp) awaiting your review.
+- `Outbox/`: Move files here to authorize the agent to send/post them.
+- `Sent/`: Archive of successfully executed actions.
+- `Watchers/`: The "Eyes" of the system (monitoring scripts).
+- `Tools/`: The "Hands" of the system (execution scripts).
+- `Skills/`: Portable capability documentation for agents.
+
+---
+
+## 🛠️ Setup
+
+1. **Credentials**: Copy `.env.template` to `.env` and fill in your API keys and login details.
+2. **Dependencies**: Managed via `uv`. Run `uv sync` to ensure all libraries are installed.
+3. **Playwright**: Run `python -m playwright install` for LinkedIn automation.
+
+---
+
+## 🏃 Running the System
+
+You should run three main processes (in separate terminals or via Task Scheduler):
+
+### 1. The Eyes (Watchers)
+Choose which channels to monitor:
 ```powershell
-uv run filesystem_watcher.py
+uv run Watchers/gmail_watcher.py
 ```
 
-### 2. Agent Loop (Ralph Wiggum Mode)
-This script processes files in `Needs_Action`, creates a plan, summarizes the content into `Dashboard.md`, and moves the file to `Done`.
+### 2. The Brain (Agent Loop)
+Processes the Inbox and creates Plans/Drafts:
 ```powershell
 uv run agent_loop.py
 ```
 
-## How to Test
-1. Create a text file or drop any file into `AI_Employee_Vault/Drop_Zone`.
-2. Observe the terminal for `filesystem_watcher.py` – it will detect and move the file.
-3. Observe the terminal for `agent_loop.py` – it will process the file.
-4. Check `AI_Employee_Vault/Documentation/Dashboard.md` for the summary.
-5. Check `AI_Employee_Vault/Done` for the processed file and its metadata.
-6. Check `AI_Employee_Vault/PHR` for the prompt record.
+### 3. The Manager (Orchestrator)
+Executes approved tasks from the Outbox:
+```powershell
+uv run orchestrator.py
+```
+
+---
+
+## 🧠 Agent Skills
+Each capability (LinkedIn Posting, Emailing, HITL Workflow) is documented in the `Skills/` directory. Use these files to train other agents (like Claude Code or Gemini CLI) on how to interact with your Digital FTE.

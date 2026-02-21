@@ -12,4 +12,5 @@ dependencies = [
     "fastmcp>=0.1.0",
     "pywhatkit>=5.4",
     "yagmail>=0.15.293",
+    "playwright>=1.58.0",
 ]
